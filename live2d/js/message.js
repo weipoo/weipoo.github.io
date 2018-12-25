@@ -330,7 +330,7 @@ if(!norunFlag){
 			if(live2dBGM_PlayTime){
 				bgmPlayTime = parseInt(live2dBGM_PlayTime);
 			}
-			var live2dBGMSrc = "/music/"+musicList[bgmPlayNow];
+			var live2dBGMSrc = ""+musicList[bgmPlayNow];
 			$('#live2d_bgm').attr('data-bgm',bgmPlayNow);
 			$('#live2d_bgm').attr('src',live2dBGMSrc);
 			$('#live2d_bgm')[0].currentTime = bgmPlayTime;
