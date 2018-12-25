@@ -360,7 +360,7 @@ if(!norunFlag){
 					if(listNow >musicList.length-1){
 					listNow = 0;
 					}
-					var listNewSrc ="music/"+musicList[listNow];
+					var listNewSrc =""+musicList[listNow];
 					sessionStorage.setItem("live2dBGM_Num",listNow);
 					$('#live2d_bgm').attr('src',listNewSrc);
 				    $('#live2d_bgm')[0].play();
@@ -372,7 +372,7 @@ if(!norunFlag){
 					if(listNow >musicList.length-1){
 					listNow = 0;
 					}
-					var listNewSrc = "music/"+musicList[listNow];
+					var listNewSrc = ""+musicList[listNow];
 					sessionStorage.setItem("live2dBGM_Num",listNow);
 					$('#live2d_bgm').attr('src',listNewSrc);
 				    $('#live2d_bgm')[0].play();
@@ -387,7 +387,7 @@ if(!norunFlag){
 					if(listNow <0){
 					listNow = musicList.length-1;
 					}
-					var listNewSrc ="music/"+musicList[listNow];
+					var listNewSrc =""+musicList[listNow];
 					sessionStorage.setItem("live2dBGM_Num",listNow);
 					$('#live2d_bgm').attr('src',listNewSrc);
 				    $('#live2d_bgm')[0].play();
@@ -399,7 +399,7 @@ if(!norunFlag){
 					if(listNow <0){
 					listNow = musicList.length-1;
 					}
-					var listNewSrc = "music/"+musicList[listNow];
+					var listNewSrc = ""+musicList[listNow];
 					sessionStorage.setItem("live2dBGM_Num",listNow);
 					$('#live2d_bgm').attr('src',listNewSrc);
 				    $('#live2d_bgm')[0].play();
@@ -423,7 +423,7 @@ if(!norunFlag){
 				if(listNow > musicList.length-1){
 					listNow = 0;
 				}
-				var listNewSrc = "music/"+musicList[listNow];
+				var listNewSrc = ""+musicList[listNow];
 				sessionStorage.setItem("live2dBGM_Num",listNow);
 				$('#live2d_bgm').attr('src',listNewSrc);
 				$('#live2d_bgm')[0].play();
