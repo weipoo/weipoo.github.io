@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-12-26T03:55:45.000Z</updated>
+  <updated>2019-09-09T07:56:55.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>微信小程序自定义右上角提示组件</title>
+    <link href="http://yoursite.com/2019/09/09/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8F%90%E7%A4%BA%E7%BB%84%E4%BB%B6/"/>
+    <id>http://yoursite.com/2019/09/09/微信小程序自定义提示组件/</id>
+    <published>2019-09-09T07:34:33.000Z</published>
+    <updated>2019-09-09T07:56:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="微信小程序自定义右上角提示组件"><a href="#微信小程序自定义右上角提示组件" class="headerlink" title="微信小程序自定义右上角提示组件"></a>微信小程序自定义右上角提示组件</h1><h3 id="1-目录结构"><a href="#1-目录结构" class="headerlink" title="1. 目录结构"></a>1. 目录结构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">project-name</span><br><span class="line">├── components</span><br><span class="line">│   ├── add-tips            // 提示组件</span><br><span class="line">│   ├── assets              // 资源目录</span><br><span class="line">├── pages</span><br><span class="line">│   ├── index               // demo演示页面</span><br><span class="line">├── app.js                  </span><br><span class="line">├── app.json</span><br><span class="line">├── app.wxss   </span><br><span class="line">└── project.config.json     // 小程序配置文件 </span><br><span class="line">```   </span><br><span class="line">### 2. 引用方式：</span><br><span class="line"></span><br><span class="line">a. 在app.json中配置add-tips组件引用；</span><br></pre></td></tr></table></figure><p> “usingComponents”: {<br>    “add-tips”: “/components/add-tips/index”<br> },<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">b. 在wxml页面直接引用。</span><br></pre></td></tr></table></figure></p><p><add-tips></add-tips><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 3.核心代码示例：</span><br></pre></td></tr></table></figure></p><pre><code>// 判断是否已经显示过let cacheOne = wx.getStorageSync(STORAGE_KEY_ONE);const now = +new Date();// 校验缓存数据 以及缓存时间是否过期(关闭后缓存一个月 一个月后重新提示用户)if (cacheOne &amp;&amp; (now - cacheOne &lt; 30 * 24 * 3600000)) return;// 处理根据系统信息处理位移箭头位置（重点）let systemInfo = wx.getSystemInfoSync();let client = wx.getMenuButtonBoundingClientRect();if (systemInfo &amp;&amp; client) {  this.setData({    marRight: systemInfo.screenWidth - client.left - 28  });}// 没显示过，则进行展示this.setData({  SHOW_TOP: true});</code></pre><p><code>`</code></p><h3 id="4-效果图："><a href="#4-效果图：" class="headerlink" title="4. 效果图："></a>4. 效果图：</h3><p><img src="https://github.com/weipoo/add-tips/blob/master/demo.jpg" alt=""></p><h3 id="5-gitHub仓库地址："><a href="#5-gitHub仓库地址：" class="headerlink" title="5. gitHub仓库地址："></a>5. gitHub仓库地址：</h3><p><a href="https://github.com/weipoo/add-tips" target="_blank" rel="noopener">add-tips组件</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;微信小程序自定义右上角提示组件&quot;&gt;&lt;a href=&quot;#微信小程序自定义右上角提示组件&quot; class=&quot;headerlink&quot; title=&quot;微信小程序自定义右上角提示组件&quot;&gt;&lt;/a&gt;微信小程序自定义右上角提示组件&lt;/h1&gt;&lt;h3 id=&quot;1-目录结构&quot;&gt;&lt;a hr
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>MacDown使用总结</title>
