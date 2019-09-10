@@ -1,0 +1,43 @@
+<meta/><!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 最强干货系列-小程序调用微信支付问题 · weipoo</title><meta name="description" content="最强干货系列-小程序调用微信支付问题 - weipo"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="weipoo"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/weipoo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">最强干货系列-小程序调用微信支付问题</h1><div class="post-info">Sep 10, 2019</div><div class="post-content"><p>目前已知的调用微信支付的方式：</p>
+<ol>
+<li>通用的方式就是小程序直接发起微信支付就行；</li>
+<li><p>通过小程序访问某支付域名网站实现目标发起微信支付：<br>小程序使用web-view组件访问目标网站后，目标网站发起微信支付就行。</p>
+<p><strong>注意：</strong>这里有一个最大的坑点，直接通过web-view组件访问是不能发起微信支付的，但是打开调试模式或者不校验合法域名是可以发起的！！等真正上了生产才知道，根本不能发起微信支付！<br><strong>解决办法：</strong><br>让目标网站js中检测到当前环境是小程序后，把发起微信支付的必要参数封装好后通过微信小程序那边的sdk把参数请求封装好后跳转到我们小程序这边的目标页面，就可以通过我们的页面发起微信支付了。</p>
+</li>
+</ol>
+<p><strong>注意事项：</strong></p>
+<p>能够成功调用微信支付，必须得保证下单的appId和付款时候的appId相同（或者属于同一商户号），否则一切白搭！</p>
+<h3 id="针对方式二调用微信支付的解决方案"><a href="#针对方式二调用微信支付的解决方案" class="headerlink" title="针对方式二调用微信支付的解决方案"></a>针对方式二调用微信支付的解决方案</h3><h4 id="需要解决的问题："><a href="#需要解决的问题：" class="headerlink" title="需要解决的问题："></a>需要解决的问题：</h4><p>通过h5访问的形式访问目标支付网站后发起小程序微信支付。</p>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>在最终调用统一支付域名下的页面中添加<strong>微信小程序调用微信支付业务代码</strong>（自己写好后给到目标网页，下面会给出示例），代码将会判定当前访问环境是否为小程序，如果判定为小程序访问环境的话，将会把调用微信支付的参数传递到小程序具体支付页面来发起微信支付，该方案适用于所有小程序调用微信支付，也方便后期扩展更多小程序业务。</p>
+<h4 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h4><ol>
+<li><strong>微信小程序端：</strong>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">目录结构</span><br><span class="line">project-name</span><br><span class="line">├── pages</span><br><span class="line">│   ├── index               // demo演示首页</span><br><span class="line">│   ├── web-page            // h5访问通用页</span><br><span class="line">│   ├── wxpay               // 发起微信支付页</span><br><span class="line">├── app.js                  </span><br><span class="line">├── app.json</span><br><span class="line">├── app.wxss   </span><br><span class="line">└── project.config.json     // 小程序配置文件</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><a href="https://github.com/weipoo/wechat-miniprogram-pay/tree/master/miniprogram-demo" target="_blank" rel="noopener">微信支付小程序源码Demo</a></p>
+<ol start="2">
+<li><strong>h5端：</strong></li>
+</ol>
+<ul>
+<li><p>将下面的微信小程序调用<a href="https://github.com/weipoo/wechat-miniprogram-pay/blob/master/pay-h5-demo/index.html" target="_blank" rel="noopener">微信支付业务代码</a>放入支付发起页面中;<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-01.jpg" alt=""></p>
+</li>
+<li><p>修改微信支付业务代码参数（时间戳、随机串、prepay_id、签名方式、支付签名等）；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-02.jpg" alt=""></p>
+</li>
+<li><p>页面校验一下params参数数据拼接正常就行，后面的小程序这边会做校验；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-03.jpg" alt=""></p>
+</li>
+<li><p>启动index.html页面作为网站；（也可以直接放到你自己的网站上，这里采用python指令本地化启动模拟网站）<br><code>python -m SimpleHTTPServer</code></p>
+</li>
+</ul>
+<p><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-04.png" alt=""></p>
+<h4 id="测试最终结果"><a href="#测试最终结果" class="headerlink" title="测试最终结果"></a>测试最终结果</h4><ol>
+<li><p>在微信小程序中点击访问目标微信支付页面；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/demo-01.jpg" width="375" height="667"></p>
+</li>
+<li><p>进入微信支付h5页面，校验访问环境是否为微信小程序访问，若是则处理微信支付参数传递跳转微信支付页面；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/demo-02.jpg" width="375" height="667"></p>
+</li>
+<li><p>来到微信支付页面，执行微信支付。<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/demo-03.jpg" width="375" height="667"></p>
+</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/09/10/git常用指令（实用性强）/" class="next">下一篇</a></div><div class="copyright"><p>© 2018 - 2019 <a href="http://yoursite.com">weipo</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div><link rel="stylesheet" href="/live2d/css/live2d.css"><div id="landlord" style="left:5px;bottom:0px;"><div style="opacity:0" class="message"></div>    <canvas id="live2d" width="480" height="620" class="live2d"></canvas>    <div class="live_talk_input_body"><div class="live_talk_input_name_body"><input id="AIuserName" name="name" type="text" autocomplete="off" placeholder="你的名字" class="live_talk_name white_input"></div>        <div class="live_talk_input_text_body"><input id="AIuserText" name="talk" type="text" autocomplete="off" placeholder="要和我聊什么呀？" class="live_talk_talk white_input">            <button id="talk_send" type="button" class="live_talk_send_btn">发送</button></div></div>    <input id="live_talk" name="live_talk" value="1" type="hidden">    <div class="live_ico_box"><div id="showInfoBtn" class="live_ico_item type_info"></div>    	<div id="showTalkBtn" class="live_ico_item type_talk"></div>        <div id="musicButton" class="live_ico_item type_music"></div>         <div id="beforeButton" class="live_ico_item type_before"></div>        <div id="afterButton" class="live_ico_item type_after"></div>        <div id="youduButton" class="live_ico_item type_youdu"></div>        <div id="hideButton" class="live_ico_item type_quit"></div>        <input id="live_statu_val" name="live_statu_val" value="0" type="hidden">        <audio id="live2d_bgm" src="" style="display:none;" data-bgm="0" preload="none"></audio>        <input name="live2dBGM" value="https://t1.aixinxi.net/o_1c52p4qbp15idv6bl55h381moha.mp3" type="hidden">        <input name="live2dBGM" value="https://t1.aixinxi.net/o_1c52p8frrlmf1aled1e14m56una.mp3" type="hidden">        <input id="duType" value="douqilai,l2d_caihong" type="hidden"></div></div><div id="open_live2d">召唤卡片老婆</div><script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js"></script><script>var message_Path = '/live2d/';//资源目录，如果目录不对请更改
+var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+// var home_Path = 'https://seqiloli.com'
+var home_Path = 'https://weipoo.github.io'
+var musiclist=eval(["http://weipo.oss-cn-shanghai.aliyuncs.com/secretBase.mp3","http://weipo.oss-cn-shanghai.aliyuncs.com/sincerely.mp3"]);</script><script type="text/javascript" src="/live2d/js/live2d.js"></script><script type="text/javascript" src="/live2d/js/message.js"></script></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

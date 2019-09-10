@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-09-09T08:51:32.000Z</updated>
+  <updated>2019-09-10T06:11:23.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,53 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>最强干货系列-小程序调用微信支付问题</title>
+    <link href="http://yoursite.com/2019/09/10/%E6%9C%80%E5%BC%BA%E5%B9%B2%E8%B4%A7%E7%B3%BB%E5%88%97-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%94%A8%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2019/09/10/最强干货系列-小程序调用微信支付问题/</id>
+    <published>2019-09-10T01:51:33.000Z</published>
+    <updated>2019-09-10T06:11:23.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>目前已知的调用微信支付的方式：</p><ol><li>通用的方式就是小程序直接发起微信支付就行；</li><li><p>通过小程序访问某支付域名网站实现目标发起微信支付：<br>小程序使用web-view组件访问目标网站后，目标网站发起微信支付就行。</p><p><strong>注意：</strong>这里有一个最大的坑点，直接通过web-view组件访问是不能发起微信支付的，但是打开调试模式或者不校验合法域名是可以发起的！！等真正上了生产才知道，根本不能发起微信支付！<br><strong>解决办法：</strong><br>让目标网站js中检测到当前环境是小程序后，把发起微信支付的必要参数封装好后通过微信小程序那边的sdk把参数请求封装好后跳转到我们小程序这边的目标页面，就可以通过我们的页面发起微信支付了。</p></li></ol><p><strong>注意事项：</strong></p><p>能够成功调用微信支付，必须得保证下单的appId和付款时候的appId相同（或者属于同一商户号），否则一切白搭！</p><h3 id="针对方式二调用微信支付的解决方案"><a href="#针对方式二调用微信支付的解决方案" class="headerlink" title="针对方式二调用微信支付的解决方案"></a>针对方式二调用微信支付的解决方案</h3><h4 id="需要解决的问题："><a href="#需要解决的问题：" class="headerlink" title="需要解决的问题："></a>需要解决的问题：</h4><p>通过h5访问的形式访问目标支付网站后发起小程序微信支付。</p><h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><p>在最终调用统一支付域名下的页面中添加<strong>微信小程序调用微信支付业务代码</strong>（自己写好后给到目标网页，下面会给出示例），代码将会判定当前访问环境是否为小程序，如果判定为小程序访问环境的话，将会把调用微信支付的参数传递到小程序具体支付页面来发起微信支付，该方案适用于所有小程序调用微信支付，也方便后期扩展更多小程序业务。</p><h4 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h4><ol><li><strong>微信小程序端：</strong>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">目录结构</span><br><span class="line">project-name</span><br><span class="line">├── pages</span><br><span class="line">│   ├── index               // demo演示首页</span><br><span class="line">│   ├── web-page            // h5访问通用页</span><br><span class="line">│   ├── wxpay               // 发起微信支付页</span><br><span class="line">├── app.js                  </span><br><span class="line">├── app.json</span><br><span class="line">├── app.wxss   </span><br><span class="line">└── project.config.json     // 小程序配置文件</span><br></pre></td></tr></table></figure></li></ol><p><a href="https://github.com/weipoo/wechat-miniprogram-pay/tree/master/miniprogram-demo" target="_blank" rel="noopener">微信支付小程序源码Demo</a></p><ol start="2"><li><strong>h5端：</strong></li></ol><ul><li><p>将下面的微信小程序调用<a href="https://github.com/weipoo/wechat-miniprogram-pay/blob/master/pay-h5-demo/index.html" target="_blank" rel="noopener">微信支付业务代码</a>放入支付发起页面中;<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-01.jpg" alt=""></p></li><li><p>修改微信支付业务代码参数（时间戳、随机串、prepay_id、签名方式、支付签名等）；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-02.jpg" alt=""></p></li><li><p>页面校验一下params参数数据拼接正常就行，后面的小程序这边会做校验；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-03.jpg" alt=""></p></li><li><p>启动index.html页面作为网站；（也可以直接放到你自己的网站上，这里采用python指令本地化启动模拟网站）<br><code>python -m SimpleHTTPServer</code></p></li></ul><p><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/code-04.png" alt=""></p><h4 id="测试最终结果"><a href="#测试最终结果" class="headerlink" title="测试最终结果"></a>测试最终结果</h4><ol><li><p>在微信小程序中点击访问目标微信支付页面；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/demo-01.jpg" width="375" height="667"></p></li><li><p>进入微信支付h5页面，校验访问环境是否为微信小程序访问，若是则处理微信支付参数传递跳转微信支付页面；<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/demo-02.jpg" width="375" height="667"></p></li><li><p>来到微信支付页面，执行微信支付。<br><img src="https://weipo.oss-cn-shanghai.aliyuncs.com/github/images/wechat_pay/demo-03.jpg" width="375" height="667"></p></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;目前已知的调用微信支付的方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通用的方式就是小程序直接发起微信支付就行；&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;通过小程序访问某支付域名网站实现目标发起微信支付：&lt;br&gt;小程序使用web-view组件访问目标网站后，目标网站发起微信支付就行。&lt;/p&gt;
+&lt;p&gt;&lt;
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>git常用指令（实用性强）</title>
+    <link href="http://yoursite.com/2019/09/10/git%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4%EF%BC%88%E5%AE%9E%E7%94%A8%E6%80%A7%E5%BC%BA%EF%BC%89/"/>
+    <id>http://yoursite.com/2019/09/10/git常用指令（实用性强）/</id>
+    <published>2019-09-10T01:46:58.000Z</published>
+    <updated>2019-09-10T06:05:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>克隆仓库代码到本地（文件夹路径下）</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone  + git仓库url</span><br></pre></td></tr></table></figure><p>检查分支</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch (当前分支)</span><br><span class="line">git branch -a (查看所有分支)</span><br></pre></td></tr></table></figure><p>切换分支</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -t + 分支路径（copy git branch -a 的结果就行)</span><br></pre></td></tr></table></figure><p>拉取最新代码</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull</span><br></pre></td></tr></table></figure><p>提交修改代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m &quot;[*]xxxxxx&quot; (提交信息）</span><br><span class="line">git push</span><br></pre></td></tr></table></figure></p><p>处理冲突</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git stash</span><br><span class="line">git pull</span><br><span class="line">git stash pop</span><br></pre></td></tr></table></figure><p><strong>注意：最好用vscode开发 这个IDEA本身支持git的，结合git指令后很轻松</strong></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;克隆仓库代码到本地（文件夹路径下）&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td cl
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>微信小程序心形进度条实现</title>
